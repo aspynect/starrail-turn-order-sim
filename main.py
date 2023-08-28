@@ -3,6 +3,7 @@ fullGauge = 10000
 combatantsDict = {}
 currentTurn = None
 
+# Syntax library for commands
 commandSyntax = {
     "create": "create [name] [base speed] [current speed]",
     "inspect": "inspect [name]",
@@ -14,11 +15,14 @@ commandSyntax = {
     "exit": ""
 }
 
+# Prints the syntax for attempted command
 def syntax(name):
     print(f"syntax for {name[0]}: " + commandSyntax[name[0]])
 
+# Class for combatants that are created
 class Combatant:
     def __init__(self, name, baseSpeed, currentSpeed):
+        # Basic stats and such
         self.name = name
         self.baseSpeed = baseSpeed
         self.currentSpeed = currentSpeed
@@ -30,12 +34,15 @@ class Combatant:
         self.speedBuffs = []
         self.speedDebuffs = []
     
+    # Checks the AV of the combatant
     def checkAV(self):
         return self.gauge / self.currentSpeed
     
+    # Updates the AV of the class
     def updateAV(self):
         self.AV = self.gauge / self.currentSpeed
 
+    # Resets the gauge of the combatant to the default value, checks duration of buffs/debuffs and removes them if necessary
     def resetGauge(self):
         buffDeletions = []
         debuffDeletions = []
@@ -68,6 +75,7 @@ class Combatant:
         self.AV = self.checkAV()
         combatantsDict[self.name] = self
 
+    # Ticks the AV of the combatatnt tickCount times
     def tickAV(self, tickCount):
         tickCount = math.ceil(tickCount)
         for x in range(tickCount):
@@ -77,12 +85,15 @@ class Combatant:
         print(f"{self.name} AV: {str(self.AV)} SPD: {self.currentSpeed}")
         combatantsDict[self.name] = self
 
+    # Advances combatant's turn by a percentage
     def advanceTurn(self, amount):
         beforeGauge = self.gauge
         lowestGauge = 0
+        #Determines the combatant with the lowest gauge
         for combatant in combatantsDict:
             if combatantsDict[combatant].gauge < lowestGauge:
                 lowestGauge = combatantsDict[combatant].gauge
+        # Special case for 100% or more advance
         if float(amount) >= 100:
             self.gauge = lowestGauge - 1
         else:
@@ -99,6 +110,7 @@ class Combatant:
         updateCurrentTurn()
         print(f"Current Turn: {currentTurn.name}")
 
+    # Delays the combatant's turn by a percent amount
     def delayTurn(self, amount):
         beforeGauge = self.gauge
         self.gauge = self.gauge + ((float(amount)/100) * 10000)
@@ -112,6 +124,7 @@ class Combatant:
         updateCurrentTurn()
         print(f"Current Turn: {currentTurn.name}")
 
+    # Applies a speed buff to the combatant (percent or flat) for turnCount turns
     def speedUp(self, amount, turnCount):
         self.speedBuffs.append([amount, round(float(turnCount))])
         if amount[-1] == "%":
@@ -121,6 +134,7 @@ class Combatant:
         combatantsDict[self.name] = self
         #TODO add update turn order
 
+    # Applies a speed debuff to the combatant (percent or flat) for turnCount turns
     def slowDown(self, amount, turnCount):
         self.speedDebuffs.append([amount, round(float(turnCount))])
         if amount[-1] == "%":
@@ -132,7 +146,7 @@ class Combatant:
 
 
 
-
+# Creates a combatant class of a certain name, base speed, and current speed
 def createCombatant(name, baseSpeed, currentSpeed):
     combatantsDict[name] = Combatant(name, int(baseSpeed), int(currentSpeed))
 
@@ -143,6 +157,7 @@ def inspectCombatant(name):
     #for value in combatantsDict[name]:
     #    print(value,':',combatantsDict[name][value])
 
+# Updates the combatant who is currently up
 def updateCurrentTurn():
     global currentTurn
     if currentTurn == None:
@@ -151,6 +166,7 @@ def updateCurrentTurn():
         if combatantsDict[combatant].AV < currentTurn.AV:
             currentTurn = combatantsDict[combatant]
 
+#Progresses the turn order to the next turn 
 def progressTurn():
     global currentTurn
     print('Progressing to the next turn')
@@ -171,6 +187,7 @@ def progressTurn():
 
 
 #TODO update turn order (nicely display turn order?)
+# Input loop - command interface
 while True:
     inputText = input("").split()
     if len(inputText) == 0:
