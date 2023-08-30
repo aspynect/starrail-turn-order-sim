@@ -94,10 +94,10 @@ class Combatant:
             if combatantsDict[combatant].gauge < lowestGauge:
                 lowestGauge = combatantsDict[combatant].gauge
         # Special case for 100% or more advance
-        if float(amount) >= 100:
+        if amount >= 100:
             self.gauge = lowestGauge - 1
         else:
-            self.gauge = self.gauge - ((float(amount) / 100) * 10000)
+            self.gauge = self.gauge - ((amount / 100) * 10000)
             if self.gauge <= lowestGauge:
                 self.gauge = lowestGauge + 1
         combatantsDict[self.name] = self
@@ -113,7 +113,7 @@ class Combatant:
     # Delays the combatant's turn by a percent amount
     def delayTurn(self, amount):
         beforeGauge = self.gauge
-        self.gauge = self.gauge + ((float(amount)/100) * 10000)
+        self.gauge = self.gauge + ((amount/100) * 10000)
         combatantsDict[self.name] = self
         self.updateAV()
         print(f"{self.name} AV Delayed from {beforeGauge} to {self.gauge}")
@@ -203,16 +203,18 @@ while True:
 
         case 'progress':
             progressTurn()
+        #TODO check on advance and delay for %, input validation in general
+        #TODO fix advance 100+
         case 'advance':
-            if len(inputText) != 3:
+            if len(inputText) != 3 or not inputText[2].isnumeric():
                 syntax(inputText)
             else:
-                combatantsDict[inputText[1]].advanceTurn(inputText[2])
+                combatantsDict[inputText[1]].advanceTurn(float(inputText[2]))
         case 'delay':
-            if len(inputText) != 3:
+            if len(inputText) != 3 or not inputText[2].isnumeric():
                 syntax(inputText)
             else:
-                combatantsDict[inputText[1]].delayTurn(inputText[2])
+                combatantsDict[inputText[1]].delayTurn(float(inputText[2]))
 
         case 'speedup':
             if len(inputText) != 4:
@@ -233,6 +235,10 @@ while True:
                 inspectCombatant(inputText[1])
 
         #TODO help command - iterate through syntax dict
+        case 'help':
+            for x in commandSyntax.keys():
+                print(f"{x}: {commandSyntax[x]}")
+
         case 'watermelon':
             print('success')
         case 'exit':
