@@ -162,10 +162,6 @@ class Combatant:
 def createCombatant(name, baseSpeed, currentSpeed):
     combatantsDict[name] = Combatant(name, int(baseSpeed), int(currentSpeed))
 
-#TODO move to a fucntion in the class
-def inspectCombatant(name):
-    print(combatantsDict[name])
-
 # Updates the combatant who is currently up
 def updateCurrentTurn():
     global currentTurn
@@ -241,7 +237,7 @@ while True:
             if len(inputText) != 2:
                 syntax(inputText)
             else:
-                inspectCombatant(inputText[1])
+                print(combatantsDict[[inputText[1]]])
 
         case 'help':
             for x in commandSyntax.keys():
