@@ -33,6 +33,18 @@ class Combatant:
         #[[amount, turnsLeft], [amount, turnsLeft]]
         self.speedBuffs = []
         self.speedDebuffs = []
+
+    def __str__(self):
+        return f"""
+        Name: {self.name}
+        Base Speed: {self.baseSpeed}
+        Current Speed: {self.currentSpeed}
+        Current Gauge: {self.gauge}
+        Current AV: {self.AV}
+        Dead? {self.dead}
+        Current Speed Buffs: {self.speedBuffs}
+        Current Speed Debuffs: {self.speedDebuffs}
+        """
     
     # Checks the AV of the combatant
     def checkAV(self):
@@ -153,9 +165,6 @@ def createCombatant(name, baseSpeed, currentSpeed):
 #TODO move to a fucntion in the class
 def inspectCombatant(name):
     print(combatantsDict[name])
-    #TODO how the FUCK do i print a dictionary entry
-    #for value in combatantsDict[name]:
-    #    print(value,':',combatantsDict[name][value])
 
 # Updates the combatant who is currently up
 def updateCurrentTurn():
@@ -234,7 +243,6 @@ while True:
             else:
                 inspectCombatant(inputText[1])
 
-        #TODO help command - iterate through syntax dict
         case 'help':
             for x in commandSyntax.keys():
                 print(f"{x}: {commandSyntax[x]}")
